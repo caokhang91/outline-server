@@ -23,6 +23,7 @@ set -eu
 export ROOT_DIR=${ROOT_DIR:-$(git rev-parse --show-toplevel)}
 export BUILD_DIR=${BUILD_DIR:-$ROOT_DIR/build}
 export _DO_ACTION_INDENT=''
+export OUTLINE_DEBUG=true
 
 function do_action() {
   local OLD_INDENT=${_DO_ACTION_INDENT}

@@ -29,7 +29,12 @@ LABEL shadowbox.github.release="${GITHUB_RELEASE}"
 RUN apk add --no-cache curl
 
 COPY src/shadowbox/scripts scripts/
+
 COPY src/shadowbox/scripts/update_mmdb.sh /etc/periodic/weekly/update_mmdb
+
+COPY src/shadowbox/scripts/GeoLite2-Country.mmdb /tmp/
+
+RUN chmod +x /etc/periodic/weekly/update_mmdb
 
 RUN /etc/periodic/weekly/update_mmdb
 
@@ -52,3 +57,6 @@ RUN mkdir -p /root/shadowbox/persisted-state
 COPY src/shadowbox/docker/cmd.sh /
 
 CMD /cmd.sh
+
+#EXPOSE 9092 9090 9091 8081
+

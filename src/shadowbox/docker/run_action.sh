@@ -13,15 +13,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+export SB_IMAGE=outline/shadowbox
 
-do_action shadowbox/docker/build
+#do_action shadowbox/docker/build
 
 readonly OUTLINE_DIR=/tmp/outline
 readonly HOST_STATE_DIR=$OUTLINE_DIR/persisted-state
 readonly CONTAINER_STATE_DIR=/root/shadowbox/persisted-state
 readonly STATE_CONFIG=$HOST_STATE_DIR/shadowbox_server_config.json
 mkdir -p $HOST_STATE_DIR && touch "$HOST_STATE_DIR/shadowbox_config.json"
-[[ -e $STATE_CONFIG ]] || echo '{"hostname":"127.0.0.1"}' > $STATE_CONFIG
+[[ -e $STATE_CONFIG ]] || echo '{"hostname":"0.0.0.0"}' > $STATE_CONFIG
 source $ROOT_DIR/src/shadowbox/scripts/make_test_certificate.sh "${OUTLINE_DIR}"
 
 # TODO: mount a folder rather than individual files.
@@ -35,7 +36,7 @@ declare -a docker_bindings=(
   -e SB_CERTIFICATE_FILE=${SB_CERTIFICATE_FILE}
   -e SB_PRIVATE_KEY_FILE=${SB_PRIVATE_KEY_FILE}
 )
-
+echo "Binding config ${docker_bindings[@]}"
 echo "Running image ${SB_IMAGE}"
 
-docker run --rm -it --network=host --name shadowbox "${docker_bindings[@]}" ${SB_IMAGE}
+docker run --rm -it -p 8081:8081 -p 9091:9091 -p 9092:9092 -p 9090:9090 -p 12345:12345 -p 7899:7899 --name shadowbox "${docker_bindings[@]}" ${SB_IMAGE}
